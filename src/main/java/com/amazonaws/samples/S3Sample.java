@@ -26,6 +26,7 @@ import java.util.UUID;
 
 import com.amazonaws.AmazonClientException;
 import com.amazonaws.AmazonServiceException;
+import com.amazonaws.ClientConfiguration;
 import com.amazonaws.regions.Region;
 import com.amazonaws.regions.Regions;
 import com.amazonaws.services.s3.AmazonS3;
@@ -62,12 +63,17 @@ public class S3Sample {
          * aws_secret_access_key = YOUR_SECRET_ACCESS_KEY
          */
 
-        AmazonS3 s3 = new AmazonS3Client();
-        Region usWest2 = Region.getRegion(Regions.US_WEST_2);
-        s3.setRegion(usWest2);
 
-        String bucketName = "my-first-s3-bucket-" + UUID.randomUUID();
-        String key = "MyObjectKey";
+        ClientConfiguration opts = new ClientConfiguration();
+        opts.setSignerOverride("S3SignerType");  // NOT "AWS3SignerType"
+        AmazonS3 s3 = new AmazonS3Client(opts);
+        //Region cnPek3a = Region.getRegion("pek3a");
+        //s3.setRegion(cnPek3a);
+        s3.setEndpoint("http://s3.pek3a.qingstor.com");
+
+        //String bucketName = "my-first-s3-bucket-" + UUID.randomUUID();
+        String bucketName = "foo0418";
+        String key = "foofoofoo";
 
         System.out.println("===========================================");
         System.out.println("Getting Started with Amazon S3");
@@ -88,11 +94,11 @@ public class S3Sample {
             /*
              * List the buckets in your account
              */
-            System.out.println("Listing buckets");
-            for (Bucket bucket : s3.listBuckets()) {
-                System.out.println(" - " + bucket.getName());
-            }
-            System.out.println();
+            //System.out.println("Listing buckets");
+            //for (Bucket bucket : s3.listBuckets()) {
+            //    System.out.println(" - " + bucket.getName());
+            //}
+            //System.out.println();
 
             /*
              * Upload an object to your bucket - You can easily upload a file to
@@ -117,10 +123,10 @@ public class S3Sample {
              * conditional downloading of objects based on modification times,
              * ETags, and selectively downloading a range of an object.
              */
-            System.out.println("Downloading an object");
-            S3Object object = s3.getObject(new GetObjectRequest(bucketName, key));
-            System.out.println("Content-Type: "  + object.getObjectMetadata().getContentType());
-            displayTextInputStream(object.getObjectContent());
+            //System.out.println("Downloading an object");
+            //S3Object object = s3.getObject(new GetObjectRequest(bucketName, key));
+            //System.out.println("Content-Type: "  + object.getObjectMetadata().getContentType());
+            //displayTextInputStream(object.getObjectContent());
 
             /*
              * List objects in your bucket by prefix - There are many options for
@@ -130,15 +136,15 @@ public class S3Sample {
              * use the AmazonS3.listNextBatchOfObjects(...) operation to retrieve
              * additional results.
              */
-            System.out.println("Listing objects");
-            ObjectListing objectListing = s3.listObjects(new ListObjectsRequest()
-                    .withBucketName(bucketName)
-                    .withPrefix("My"));
-            for (S3ObjectSummary objectSummary : objectListing.getObjectSummaries()) {
-                System.out.println(" - " + objectSummary.getKey() + "  " +
-                        "(size = " + objectSummary.getSize() + ")");
-            }
-            System.out.println();
+            //System.out.println("Listing objects");
+            //ObjectListing objectListing = s3.listObjects(new ListObjectsRequest()
+            //        .withBucketName(bucketName)
+            //        .withPrefix("My"));
+            //for (S3ObjectSummary objectSummary : objectListing.getObjectSummaries()) {
+            //    System.out.println(" - " + objectSummary.getKey() + "  " +
+            //            "(size = " + objectSummary.getSize() + ")");
+            //}
+            //System.out.println();
 
             /*
              * Delete an object - Unless versioning has been turned on for your bucket,
@@ -152,8 +158,8 @@ public class S3Sample {
              * deleted, so remember to delete any objects from your buckets before
              * you try to delete them.
              */
-            System.out.println("Deleting bucket " + bucketName + "\n");
-            s3.deleteBucket(bucketName);
+            //System.out.println("Deleting bucket " + bucketName + "\n");
+            //s3.deleteBucket(bucketName);
         } catch (AmazonServiceException ase) {
             System.out.println("Caught an AmazonServiceException, which means your request made it "
                     + "to Amazon S3, but was rejected with an error response for some reason.");
